@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CYBER//SEC — Ilhan présente la cybersécurité</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap');
+:root{--bg:#05090d;--panel:#0a151b;--green:#00ff9c;--cyan:#00d9ff;--white:#e9fff7;--muted:#91aaa4;--line:rgba(0,255,156,.22)}
+*{box-sizing:border-box;scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 75% 0%,#07352c 0%,transparent 35%),radial-gradient(ellipse at 10% 45%,#071c31 0%,transparent 38%),var(--bg);color:var(--white);font-family:Rajdhani,Arial,sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;background-image:linear-gradient(rgba(0,255,156,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,156,.13) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 85%);z-index:-1}
+#matrix{position:fixed;inset:0;z-index:-2;opacity:.14}
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 7%;background:rgba(3,9,13,.82);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.logo{font:700 15px Orbitron;color:var(--green);letter-spacing:2px}.logo span{color:var(--cyan)}
+nav{display:flex;gap:22px;flex-wrap:wrap}nav a{color:var(--muted);text-decoration:none;font-weight:700;font-size:16px}nav a:hover{color:var(--green)}
+.lang{display:flex;gap:6px}.lang button,.cta{border:1px solid var(--green);background:transparent;color:var(--green);padding:9px 14px;font:700 13px Orbitron;cursor:pointer;clip-path:polygon(8% 0,100% 0,100% 72%,92% 100%,0 100%,0 28%);transition:.25s}.lang button.active,.lang button:hover,.cta:hover{background:var(--green);color:#00150d;box-shadow:0 0 22px #00ff9c77}
+main{max-width:1160px;margin:auto;padding:0 24px}
+.hero{min-height:82vh;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:30px;padding:70px 0}
+.eyebrow{font:600 12px Orbitron;color:var(--cyan);letter-spacing:4px}.hero h1{font:800 clamp(38px,6vw,76px)/1.05 Orbitron;margin:18px 0;text-shadow:0 0 24px #00ff9c33}.hero h1 em{font-style:normal;color:var(--green);text-shadow:0 0 26px #00ff9c99}.hero p{font-size:21px;color:#b7cbc5;max-width:590px}.hero-buttons{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.hud{position:relative;min-height:390px;display:grid;place-items:center;perspective:900px}
+.hudtag{position:absolute;font:600 11px Orbitron;color:var(--green);border:1px solid var(--line);background:rgba(6,17,23,.85);padding:8px 12px;box-shadow:0 0 18px #00ff9c22;backdrop-filter:blur(8px);z-index:4}.t1{top:10%;left:-4%}.t2{bottom:13%;right:-5%}.t3{top:22%;right:-5%;color:var(--cyan);border-color:#00d9ff55}
+/* WebGL planet canvas container */
+#planet-container{position:relative;width:min(360px,78vw);aspect-ratio:1;isolation:isolate}
+#planet-canvas{width:100%;height:100%;border-radius:50%;display:block}
+.planet-rings{position:absolute;inset:0;pointer-events:none}
+.ring-a,.ring-b{position:absolute;inset:-8%;width:116%;height:116%;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid transparent;pointer-events:none}
+.ring-a{border-top-color:#00ffb7;border-bottom-color:#00d9ff;box-shadow:0 0 18px #00d9ff55;animation:orbitA 9s linear infinite}
+.ring-b{inset:-18%;width:136%;height:136%;border:1px dashed #00ff9c77;animation:orbitB 15s linear infinite}
+.hud-shadow{position:absolute;width:110%;height:60px;bottom:-8%;left:50%;transform:translateX(-50%);border:1px solid #00d9ff55;border-radius:50%;box-shadow:0 0 28px #00d9ff44,inset 0 0 22px #00ff9c22;pointer-events:none}
+@keyframes orbitA{to{transform:translate(-50%,-50%) rotateX(72deg) rotateZ(360deg)}}
+@keyframes orbitB{to{transform:translate(-50%,-50%) rotateY(67deg) rotateX(25deg) rotateZ(360deg)}}
+section{padding:64px 0;scroll-margin-top:85px}.section-head{display:flex;align-items:center;gap:14px;margin-bottom:28px}.section-head b{font:700 12px Orbitron;color:var(--green)}h2{font:700 clamp(23px,4vw,34px) Orbitron;margin:0}.section-head:after{content:"";height:1px;background:linear-gradient(90deg,var(--green),transparent);flex:1}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+.card{background:linear-gradient(145deg,#10232a,#071016);border:1px solid var(--line);padding:23px;border-radius:13px;position:relative;overflow:hidden;transition:transform .18s,border .2s;box-shadow:0 12px 30px #0007}
+.card:hover{border-color:var(--green);box-shadow:0 0 25px #00ff9c22}.card:before{content:"";position:absolute;width:140px;height:140px;right:-75px;top:-75px;border-radius:50%;background:#00ff9c12;filter:blur(5px)}
+.icon{font-size:30px;color:var(--green);margin-bottom:12px}.card h3{font:700 17px Orbitron;color:var(--cyan);margin:6px 0 10px}.card p,.card li{font-size:18px;color:#b6c9c4;line-height:1.45}.card ul{padding-left:19px;margin-bottom:0}
+.readbox{background:linear-gradient(140deg,#0b1b20,#071016);border:1px solid #00ff9c66;border-radius:16px;padding:clamp(20px,4vw,38px);box-shadow:0 0 35px #00ff9c12;position:relative}
+.readbox:after{content:"LIVE / ORAL PRESENTATION";position:absolute;right:18px;top:16px;color:#00ff9c77;font:10px Orbitron;letter-spacing:2px}
+.readtext{font-size:20px;line-height:1.65;color:#e2f5ee;white-space:pre-line;padding-top:12px}
+.readtools{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.smallbtn{background:#0b2425;color:var(--green);border:1px solid var(--line);padding:10px 15px;border-radius:6px;font:600 13px Orbitron;cursor:pointer}.smallbtn:hover{background:#00ff9c;color:#00150d}
+.translation{display:none}.translation.show{display:block}.german.hide{display:none}
+.salary{font:700 29px Orbitron;color:var(--green);margin:10px 0}.sub{color:var(--muted);font-size:14px}
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.step{padding:18px;border-top:2px solid var(--green);background:#09171d}.step strong{font:700 13px Orbitron;color:var(--cyan)}.step p{font-size:17px;color:#b6c9c4}
+.quote{font:600 22px Rajdhani;color:var(--green);text-align:center;padding:35px;border:1px dashed #00ff9c55;background:#07151a}
+footer{border-top:1px solid var(--line);padding:30px 7%;text-align:center;color:var(--muted);font-size:15px}
+.sources a{color:var(--cyan);text-decoration:none}.sources li{margin:8px 0;font-size:16px}
+.mini-art{height:94px;display:grid;place-items:center;margin:-5px 0 12px;background:radial-gradient(ellipse,#0c3a3c,#07151c 70%);border:1px solid #00d9ff33;border-radius:9px;overflow:hidden}
+.mini-art svg{width:100%;height:100%;filter:drop-shadow(0 0 9px #00ff9c55)}
+@media(max-width:800px){header{padding:12px 4%;gap:10px;flex-wrap:wrap}nav{order:3;width:100%;justify-content:center;gap:14px}.hero{grid-template-columns:1fr;text-align:center;padding:55px 0}.hero p{margin:auto}.hero-buttons{justify-content:center}.hud{min-height:330px}.grid{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}.readbox:after{position:static;display:block;margin-bottom:8px}}
+@media(max-width:450px){.timeline{grid-template-columns:1fr}.hero h1{font-size:38px}}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<header>
+ <div class="logo">CYBER<span>//</span>SEC</div>
+ <nav><a href="#metier">Le métier</a><a href="#missions">Missions</a><a href="#salaire">Salaire</a><a href="#etudes">Études</a><a href="#oral">Mon exposé</a></nav>
+ <div class="lang"><button id="deBtn" class="active" onclick="setLang('de')">DE</button><button id="frBtn" onclick="setLang('fr')">FR</button></div>
+</header>
+<main>
+<section class="hero">
+ <div>
+  <div class="eyebrow">DOSSIER // MÉTIER DU FUTUR</div>
+  <h1>DEVIENS LE<br><em>BOUCLIER</em><br>DU NUMÉRIQUE</h1>
+  <p class="german">Hallo ! Ich heiße Ilhan. Heute stelle ich euch den Beruf der Cybersicherheit vor.</p>
+  <p class="translation">Bonjour ! Je m'appelle Ilhan. Aujourd'hui, je vais vous présenter le métier de la cybersécurité.</p>
+  <div class="hero-buttons"><a class="cta" href="#oral" style="text-decoration:none">LIRE L'EXPOSÉ ↓</a><a class="cta" href="#missions" style="text-decoration:none;border-color:var(--cyan);color:var(--cyan)">DÉCOUVRIR LE MÉTIER</a></div>
+ </div>
+ <div class="hud">
+  <div class="hudtag t1">FIREWALL // ACTIVE</div>
+  <div class="hudtag t2">THREAT: BLOCKED</div>
+  <div class="hudtag t3">SYSTEM SECURE</div>
+  <div id="planet-container">
+    <canvas id="planet-canvas"></canvas>
+    <div class="planet-rings">
+      <div class="ring-a"></div>
+      <div class="ring-b"></div>
+    </div>
+  </div>
+  <div class="hud-shadow"></div>
+ </div>
+</section>
+<section id="metier">
+ <div class="section-head"><b>01</b><h2>QU'EST-CE QUE LA CYBERSÉCURITÉ ?</h2></div>
+ <div class="grid">
+  <article class="card"><div class="icon">🛡️</div><h3>PROTÉGER</h3><p class="german">Die Cybersicherheit schützt Computer, Netzwerke und persönliche Daten vor Angriffen.</p><p class="translation">La cybersécurité protège les ordinateurs, les réseaux et les données personnelles contre les attaques informatiques.</p></article>
+  <article class="card"><div class="icon">🔎</div><h3>DÉTECTER</h3><p class="german">Experten suchen nach Schwachstellen und erkennen verdächtige Aktivitäten.</p><p class="translation">Les spécialistes recherchent les failles de sécurité et repèrent les activités suspectes.</p></article>
+  <article class="card"><div class="icon">⚡</div><h3>RÉAGIR</h3><p class="german">Bei einem Angriff müssen sie schnell handeln und das System wieder sichern.</p><p class="translation">En cas d'attaque, ils doivent agir rapidement pour stopper la menace et sécuriser le système.</p></article>
+ </div>
+</section>
+<section id="missions">
+ <div class="section-head"><b>02</b><h2>LES MISSIONS AU QUOTIDIEN</h2></div>
+ <div class="grid">
+  <article class="card"><div class="mini-art"><svg viewBox="0 0 220 90"><rect x="25" y="12" width="170" height="62" rx="7" fill="#071c27" stroke="#00d9ff" stroke-width="2"/><path d="M42 54l20-16 18 9 22-24 20 16 17-7 22 18" fill="none" stroke="#00ff9c" stroke-width="3"/><path d="M80 79h60M110 74v5" stroke="#00d9ff" stroke-width="3"/><circle cx="165" cy="28" r="4" fill="#00ff9c"/></svg></div><h3>Surveiller les réseaux</h3><p class="german">Sie überwachen Netzwerke und prüfen Sicherheitsmeldungen.</p><p class="translation">Surveiller les réseaux informatiques et analyser les alertes de sécurité.</p></article>
+  <article class="card"><div class="mini-art"><svg viewBox="0 0 220 90"><circle cx="110" cy="42" r="31" fill="#082b2b" stroke="#00ff9c" stroke-width="2"/><circle cx="110" cy="42" r="19" fill="none" stroke="#00d9ff" stroke-dasharray="4 4"/><path d="M110 42l25-18M110 42l-5-27" stroke="#00ff9c" stroke-width="3"/><circle cx="135" cy="24" r="5" fill="#00ff9c"/><path d="M110 4v8M110 72v8M72 42h8M140 42h8" stroke="#00d9ff" stroke-width="2"/></svg></div><h3>Tester la sécurité</h3><p class="german">Sie testen Systeme, um Sicherheitslücken zu finden.</p><p class="translation">Tester les systèmes pour découvrir leurs points faibles, avec l'autorisation de l'entreprise.</p></article>
+  <article class="card"><div class="mini-art"><svg viewBox="0 0 220 90"><path d="M79 40V29a31 31 0 0 1 62 0v11" fill="none" stroke="#00d9ff" stroke-width="7"/><rect x="67" y="38" width="86" height="43" rx="8" fill="#0b3a32" stroke="#00ff9c" stroke-width="3"/><circle cx="110" cy="56" r="6" fill="#caffef"/><path d="M110 62v9" stroke="#caffef" stroke-width="4"/></svg></div><h3>Protéger les données</h3><p class="german">Sie schützen Passwörter, Dateien und vertrauliche Informationen.</p><p class="translation">Protéger les mots de passe, les fichiers et les informations confidentielles.</p></article>
+ </div>
+</section>
+<section id="salaire">
+ <div class="section-head"><b>03</b><h2>LE SALAIRE 💶</h2></div>
+ <div class="grid">
+  <article class="card"><h3>ANALYSTE SOC — DÉBUTANT</h3><div class="salary">≈ 2 500 €</div><p class="german">Brutto pro Monat am Anfang, laut Onisep.</p><p class="translation">Brut par mois en début de carrière, selon l'Onisep.</p><div class="sub">Repère indicatif en France</div></article>
+  <article class="card"><h3>EXPERT EN SÉCURITÉ</h3><div class="salary">≈ 3 080 €</div><p class="german">Brutto pro Monat als Einstiegsgehalt laut Onisep.</p><p class="translation">Brut par mois comme salaire de débutant, selon l'Onisep.</p><div class="sub">Le salaire dépend du poste et de l'expérience.</div></article>
+  <article class="card"><h3>AVEC L'EXPÉRIENCE</h3><div class="salary">+ €€</div><p class="german">Mit Erfahrung und Verantwortung kann das Gehalt steigen.</p><p class="translation">Avec de l'expérience et davantage de responsabilités, le salaire peut augmenter.</p><div class="sub">Montants bruts, pas des salaires nets.</div></article>
+ </div>
+</section>
+<section id="etudes">
+ <div class="section-head"><b>04</b><h2>QUELLES ÉTUDES FAIRE ?</h2></div>
+ <div class="timeline">
+  <div class="step"><strong>APRÈS LA 3e</strong><p class="german">Ein Bac Pro oder ein anderer Weg in der Informatik.</p><p class="translation">Un bac professionnel dans l'informatique, par exemple le bac pro CIEL.</p></div>
+  <div class="step"><strong>APRÈS LE BAC</strong><p class="german">Ein BTS oder ein BUT in Informatik.</p><p class="translation">Un BTS ou un BUT dans l'informatique.</p></div>
+  <div class="step"><strong>SPÉCIALISATION</strong><p class="german">Ein Studium mit Schwerpunkt Cybersicherheit.</p><p class="translation">Une formation spécialisée en cybersécurité.</p></div>
+  <div class="step"><strong>EXPÉRIENCE</strong><p class="german">Praktika und praktische Übungen sind wichtig.</p><p class="translation">Les stages et les exercices pratiques permettent de progresser.</p></div>
+ </div>
+</section>
+<section id="oral">
+ <div class="section-head"><b>05</b><h2>MON EXPOSÉ À L'ORAL</h2></div>
+ <div class="readbox">
+  <div class="german readtext" id="germanText">Hallo, ich heiße Ilhan und heute werde ich euch den Beruf der Cybersicherheit vorstellen.
+
+Cybersicherheit ist ein Beruf im Bereich der Informatik. Das Ziel ist, Computer, Netzwerke und persönliche Daten vor Hackern und Cyberangriffen zu schützen.
+
+Die Fachleute haben verschiedene Aufgaben. Sie überwachen Computersysteme, suchen nach Sicherheitslücken und schützen wichtige Informationen. Wenn ein Angriff passiert, müssen sie schnell reagieren, um den Schaden zu begrenzen.
+
+Es gibt verschiedene Berufe in diesem Bereich. Zum Beispiel arbeitet ein SOC-Analyst daran, verdächtige Aktivitäten zu erkennen. Ein ethischer Hacker testet die Sicherheit eines Systems, aber nur mit Erlaubnis. Er hilft Unternehmen, ihre Schwächen zu verbessern.
+
+In Frankreich kann ein Anfänger als SOC-Analyst ungefähr 2.500 Euro brutto pro Monat verdienen. Ein Experte für IT-Sicherheit kann laut Onisep ungefähr 3.080 Euro brutto pro Monat am Anfang verdienen. Das Gehalt hängt von der Erfahrung und dem Beruf ab.
+
+Für diesen Beruf braucht man gute Informatikkenntnisse, logisches Denken, Geduld und Neugier. Man kann nach dem Abitur eine Ausbildung oder ein Studium in Informatik und Cybersicherheit machen.
+
+Ich finde diesen Beruf interessant, weil Technologie immer wichtiger wird und man Menschen und Unternehmen schützen kann.
+
+Danke für eure Aufmerksamkeit !</div>
+  <div class="translation readtext" id="frenchText">Bonjour, je m'appelle Ilhan et aujourd'hui, je vais vous présenter le métier de la cybersécurité.
+
+La cybersécurité est un métier dans le domaine de l'informatique. Son objectif est de protéger les ordinateurs, les réseaux et les données personnelles contre les pirates informatiques et les cyberattaques.
+
+Les spécialistes ont plusieurs missions. Ils surveillent les systèmes informatiques, recherchent les failles de sécurité et protègent les informations importantes. Lorsqu'une attaque se produit, ils doivent réagir rapidement pour limiter les dégâts.
+
+Il existe plusieurs métiers dans ce domaine. Par exemple, un analyste SOC repère les activités suspectes. Un hacker éthique teste la sécurité d'un système, mais uniquement avec une autorisation. Il aide les entreprises à corriger leurs faiblesses.
+
+En France, un débutant analyste SOC peut gagner environ 2 500 euros brut par mois. Un expert en sécurité informatique peut commencer autour de 3 080 euros brut par mois, selon l'Onisep. Le salaire dépend du métier et de l'expérience.
+
+Pour exercer ce métier, il faut de bonnes connaissances en informatique, de la logique, de la patience et de la curiosité. Après le bac, on peut suivre une formation ou des études en informatique et en cybersécurité.
+
+Je trouve ce métier intéressant parce que la technologie devient de plus en plus importante et qu'on peut protéger les personnes et les entreprises.
+
+Merci de votre attention !</div>
+ </div>
+</section>
+<section>
+ <div class="quote">« Un bon hacker ne détruit pas les systèmes : il trouve leurs faiblesses pour mieux les protéger. »</div>
+</section>
+<section class="sources">
+ <div class="section-head"><b>06</b><h2>SOURCES</h2></div>
+ <ul>
+  <li><a href="https://www.onisep.fr/ressources/univers-metier/metiers/analyste-soc" target="_blank" rel="noopener">Onisep — Fiche métier Analyste SOC</a></li>
+  <li><a href="https://www.onisep.fr/ressources/univers-metier/metiers/expert-experte-en-securite-informatique" target="_blank" rel="noopener">Onisep — Expert / experte en sécurité informatique</a></li>
+  <li><a href="https://www.onisep.fr/metier/des-metiers-qui-recrutent/les-metiers-de-la-cybersecurite" target="_blank" rel="noopener">Onisep — Les métiers de la cybersécurité</a></li>
+ </ul>
+</section>
+</main>
+<footer>CYBER//SEC — EXPOSÉ · PROTÉGER LE MONDE NUMÉRIQUE <span style="color:var(--green)">●</span></footer>
+
+<script>
+/* ===================== MATRIX BG ===================== */
+(function(){
+  const c=document.getElementById('matrix'),ctx=c.getContext('2d');
+  let w,h,cols,drops;
+  function resize(){w=c.width=innerWidth;h=c.height=innerHeight;cols=Math.floor(w/18);drops=Array(cols).fill(1)}
+  resize();addEventListener('resize',resize);
+  function draw(){ctx.fillStyle='rgba(5,9,13,.08)';ctx.fillRect(0,0,w,h);ctx.fillStyle='#00ff9c';ctx.font='13px monospace';for(let i=0;i<drops.length;i++){const t=Math.random()>.5?'01アイウ':'0101';ctx.fillText(t[Math.floor(Math.random()*t.length)],i*18,drops[i]*18);if(drops[i]*18>h&&Math.random()>.975)drops[i]=0;drops[i]++}requestAnimationFrame(draw)}
+  draw();
+})();
+
+/* ===================== LANG TOGGLE ===================== */
+function setLang(lang){
+  document.querySelectorAll('.german').forEach(e=>e.classList.toggle('hide',lang==='fr'));
+  document.querySelectorAll('.translation').forEach(e=>e.classList.toggle('show',lang==='fr'));
+  document.getElementById('deBtn').classList.toggle('active',lang==='de');
+  document.getElementById('frBtn').classList.toggle('active',lang==='fr');
+  document.documentElement.lang=lang==='de'?'de':'fr';
+}
+
+/* ===================== CARD 3D TILT ===================== */
+document.querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('pointermove',e=>{
+    if(innerWidth<800)return;
+    const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`rotateX(${-y*7}deg) rotateY(${x*7}deg) translateY(-3px)`;
+  });
+  card.addEventListener('pointerleave',()=>card.style.transform='');
+});
+
+/* ===================== WEBGL PLANET ===================== */
+(function(){
+  const canvas = document.getElementById('planet-canvas');
+  const dpr = Math.min(window.devicePixelRatio||1,2);
+  function resize(){
+    const s = canvas.parentElement.clientWidth;
+    canvas.width = s*dpr; canvas.height = s*dpr;
+    canvas.style.width = s+'px'; canvas.style.height = s+'px';
+  }
+  resize(); window.addEventListener('resize',()=>{resize();initGL()});
+
+  const gl = canvas.getContext('webgl',{antialias:true,alpha:true});
+  if(!gl){fallback2D();return;}
+
+  const VS=`
+    attribute vec3 aPos;
+    attribute vec2 aUV;
+    attribute vec3 aNorm;
+    uniform mat4 uMVP;
+    uniform mat4 uModel;
+    uniform float uTime;
+    varying vec2 vUV;
+    varying vec3 vNorm;
+    varying vec3 vWorldPos;
+    void main(){
+      vUV=aUV;
+      vNorm=normalize((uModel*vec4(aNorm,0.0)).xyz);
+      vWorldPos=(uModel*vec4(aPos,1.0)).xyz;
+      gl_Position=uMVP*vec4(aPos,1.0);
+    }`;
+
+  const FS=`
+    precision highp float;
+    varying vec2 vUV;
+    varying vec3 vNorm;
+    varying vec3 vWorldPos;
+    uniform float uTime;
+    uniform sampler2D uEarth;
+    uniform sampler2D uClouds;
+
+    // procedural noise
+    float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+    float noise(vec2 p){
+      vec2 i=floor(p),f=fract(p);
+      f=f*f*(3.0-2.0*f);
+      return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);
+    }
+    float fbm(vec2 p){
+      float v=0.0,a=0.5;
+      for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.1+vec2(1.3,2.7);a*=0.5;}
+      return v;
+    }
+
+    void main(){
+      vec2 uv=vUV;
+      // === OCEAN BASE ===
+      float deep=fbm(uv*3.0+0.5);
+      vec3 deepOcean=vec3(0.01,0.09,0.22);
+      vec3 shallowOcean=vec3(0.08,0.32,0.56);
+      vec3 ocean=mix(deepOcean,shallowOcean,deep*0.6);
+
+      // === LAND MASK using procedural continents ===
+      float cx=uv.x*6.28318;
+      float cy=(uv.y-0.5)*3.14159;
+      float landN=fbm(vec2(cx*0.9+1.2,cy*1.4+0.7));
+      landN+=0.4*fbm(vec2(cx*1.8+3.1,cy*2.1-1.3));
+      float landMask=smoothstep(0.52,0.62,landN);
+
+      // === LAND COLOR ===
+      float elevation=fbm(uv*8.0+2.0);
+      vec3 lowland=vec3(0.19,0.42,0.17);
+      vec3 highland=vec3(0.38,0.32,0.18);
+      vec3 desert=vec3(0.68,0.56,0.28);
+      vec3 forest=vec3(0.09,0.26,0.12);
+      vec3 land=mix(forest,lowland,smoothstep(0.3,0.6,elevation));
+      land=mix(land,highland,smoothstep(0.6,0.8,elevation));
+      land=mix(land,desert,smoothstep(0.75,0.9,elevation));
+      // mountain snow
+      land=mix(land,vec3(0.92,0.96,0.98),smoothstep(0.85,0.95,elevation));
+
+      // === ICE CAPS ===
+      float pole=1.0-smoothstep(0.0,0.14,abs(uv.y-0.5)*2.0-0.72);
+      pole=clamp(pole,0.0,1.0);
+      vec3 ice=vec3(0.88,0.95,1.0);
+
+      // === BASE COLOR ===
+      vec3 base=mix(ocean,land,landMask);
+      base=mix(base,ice,pole);
+
+      // === CLOUD LAYER (scrolling) ===
+      float cloudScroll=uTime*0.012;
+      vec2 cuv=vec2(fract(uv.x+cloudScroll),uv.y);
+      float cloud=fbm(cuv*5.0+vec2(0.3,1.1));
+      cloud+=0.5*fbm(cuv*9.0+vec2(2.1,0.7));
+      cloud=smoothstep(0.56,0.74,cloud);
+      // cloud shadow
+      vec2 suv=vec2(fract(cuv.x+0.004),cuv.y+0.003);
+      float shadow=fbm(suv*5.0+vec2(0.3,1.1));
+      shadow=smoothstep(0.56,0.74,shadow)*0.28;
+      base=mix(base,base*0.72,shadow);
+      base=mix(base,vec3(0.95,0.98,1.0),cloud*0.9);
+
+      // === LIGHTING ===
+      vec3 sun=normalize(vec3(-0.6,0.4,0.9));
+      float diff=max(dot(vNorm,sun),0.0);
+      float ambient=0.09;
+      float spec=pow(max(dot(reflect(-sun,vNorm),normalize(vec3(0,0,1))),0.0),32.0)*0.3;
+      // city lights on night side
+      float night=1.0-smoothstep(0.0,0.2,diff);
+      float cityN=fbm(uv*12.0+3.0)*fbm(uv*18.0+1.5);
+      float city=smoothstep(0.38,0.5,cityN)*night*landMask;
+      vec3 cityColor=vec3(1.0,0.82,0.42)*city*1.8;
+
+      vec3 col=base*(ambient+diff)+vec3(spec)+cityColor;
+
+      // === ATMOSPHERE RIM ===
+      float rim=1.0-abs(dot(vNorm,vec3(0,0,1)));
+      rim=pow(rim,3.5);
+      vec3 atmo=mix(vec3(0.0,0.55,0.9),vec3(0.0,0.9,1.0),rim)*rim*1.4;
+      col+=atmo*0.6;
+
+      gl_FragColor=vec4(col,1.0);
+    }`;
+
+  function mkShader(type,src){
+    const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);
+    if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){console.warn(gl.getShaderInfoLog(s));return null;}
+    return s;
+  }
+  let prog,vao_data,uMVP,uModel,uTime_loc;
+
+  function initGL(){
+    const vs=mkShader(gl.VERTEX_SHADER,VS);
+    const fs=mkShader(gl.FRAGMENT_SHADER,FS);
+    if(!vs||!fs)return;
+    prog=gl.createProgram();
+    gl.attachShader(prog,vs);gl.attachShader(prog,fs);gl.linkProgram(prog);
+    if(!gl.getProgramParameter(prog,gl.LINK_STATUS)){console.warn(gl.getProgramInfoLog(prog));return;}
+
+    // sphere geometry
+    const SLAT=64,SLON=64;
+    const pos=[],uv=[],norm=[],idx=[];
+    for(let i=0;i<=SLAT;i++){
+      const theta=i/SLAT*Math.PI;
+      for(let j=0;j<=SLON;j++){
+        const phi=j/SLON*2*Math.PI;
+        const x=Math.sin(theta)*Math.cos(phi);
+        const y=Math.cos(theta);
+        const z=Math.sin(theta)*Math.sin(phi);
+        pos.push(x,y,z);norm.push(x,y,z);
+        uv.push(j/SLON,1-i/SLAT);
+      }
+    }
+    for(let i=0;i<SLAT;i++){
+      for(let j=0;j<SLON;j++){
+        const a=i*(SLON+1)+j,b=a+SLON+1;
+        idx.push(a,b,a+1,b,b+1,a+1);
+      }
+    }
+    vao_data={
+      pos:pos,uv:uv,norm:norm,idx:idx,
+      posB:gl.createBuffer(),uvB:gl.createBuffer(),normB:gl.createBuffer(),idxB:gl.createBuffer(),
+      count:idx.length
+    };
+    gl.bindBuffer(gl.ARRAY_BUFFER,vao_data.posB);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(pos),gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER,vao_data.uvB);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(uv),gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER,vao_data.normB);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(norm),gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,vao_data.idxB);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(idx),gl.STATIC_DRAW);
+
+    uMVP=gl.getUniformLocation(prog,'uMVP');
+    uModel=gl.getUniformLocation(prog,'uModel');
+    uTime_loc=gl.getUniformLocation(prog,'uTime');
+  }
+  initGL();
+
+  // math utils
+  function mat4(){return new Float32Array(16)}
+  function identity(m){m[0]=m[5]=m[10]=m[15]=1;m[1]=m[2]=m[3]=m[4]=m[6]=m[7]=m[8]=m[9]=m[11]=m[12]=m[13]=m[14]=0;return m}
+  function perspective(m,fov,asp,near,far){
+    const f=1/Math.tan(fov/2),r=1/(near-far);
+    m[0]=f/asp;m[1]=m[2]=m[3]=0;
+    m[4]=0;m[5]=f;m[6]=m[7]=0;
+    m[8]=m[9]=0;m[10]=(near+far)*r;m[11]=-1;
+    m[12]=m[13]=0;m[14]=2*near*far*r;m[15]=0;
+    return m;
+  }
+  function rotY(m,a){
+    const c=Math.cos(a),s=Math.sin(a);
+    m[0]=c;m[2]=s;m[8]=-s;m[10]=c;m[1]=m[3]=m[4]=m[6]=m[7]=m[9]=m[11]=m[12]=m[13]=m[14]=0;
+    m[5]=m[15]=1;
+    return m;
+  }
+  function rotX(m,a){
+    const c=Math.cos(a),s=Math.sin(a);
+    m[0]=m[15]=1;m[5]=c;m[6]=-s;m[9]=s;m[10]=c;
+    m[1]=m[2]=m[3]=m[4]=m[7]=m[8]=m[11]=m[12]=m[13]=m[14]=0;
+    return m;
+  }
+  function mul(out,a,b){
+    for(let i=0;i<4;i++)for(let j=0;j<4;j++){
+      let s=0;for(let k=0;k<4;k++)s+=a[i*4+k]*b[k*4+j];
+      out[i*4+j]=s;
+    }return out;
+  }
+
+  let startTime=performance.now();
+  function render(now){
+    if(!prog||!vao_data){requestAnimationFrame(render);return;}
+    const t=(now-startTime)*0.001;
+    gl.viewport(0,0,canvas.width,canvas.height);
+    gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);
+
+    const asp=canvas.width/canvas.height;
+    const proj=perspective(mat4(),1.1,asp,0.1,100);
+    const view=identity(mat4());view[14]=-2.4;
+    const ry=rotY(mat4(),t*0.18);
+    const rx=rotX(mat4(),0.22+Math.sin(t*0.3)*0.06);
+    const model=mul(mat4(),rx,ry);
+    const mv=mul(mat4(),view,model);
+    const mvp=mul(mat4(),proj,mv);
+
+    gl.useProgram(prog);
+    gl.uniformMatrix4fv(uMVP,false,mvp);
+    gl.uniformMatrix4fv(uModel,false,model);
+    gl.uniform1f(uTime_loc,t);
+
+    const aPos=gl.getAttribLocation(prog,'aPos');
+    const aUV=gl.getAttribLocation(prog,'aUV');
+    const aNorm=gl.getAttribLocation(prog,'aNorm');
+
+    gl.bindBuffer(gl.ARRAY_BUFFER,vao_data.posB);gl.enableVertexAttribArray(aPos);gl.vertexAttribPointer(aPos,3,gl.FLOAT,false,0,0);
+    gl.bindBuffer(gl.ARRAY_BUFFER,vao_data.uvB);gl.enableVertexAttribArray(aUV);gl.vertexAttribPointer(aUV,2,gl.FLOAT,false,0,0);
+    gl.bindBuffer(gl.ARRAY_BUFFER,vao_data.normB);gl.enableVertexAttribArray(aNorm);gl.vertexAttribPointer(aNorm,3,gl.FLOAT,false,0,0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,vao_data.idxB);
+    gl.drawElements(gl.TRIANGLES,vao_data.count,gl.UNSIGNED_SHORT,0);
+
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+
+  // 2D canvas fallback if WebGL fails
+  function fallback2D(){
+    const ctx2=canvas.getContext('2d');
+    function draw2d(t){
+      resize();
+      const s=canvas.width,cx=s/2,cy=s/2,r=s*0.44;
+      const grad=ctx2.createRadialGradient(cx-r*0.3,cy-r*0.3,r*0.05,cx,cy,r);
+      grad.addColorStop(0,'#a5f4ff');grad.addColorStop(0.12,'#2a7fb5');
+      grad.addColorStop(0.4,'#0a4a7a');grad.addColorStop(0.8,'#021c38');grad.addColorStop(1,'#010711');
+      ctx2.clearRect(0,0,s,s);
+      ctx2.save();ctx2.beginPath();ctx2.arc(cx,cy,r,0,Math.PI*2);ctx2.clip();
+      ctx2.fillStyle=grad;ctx2.fillRect(0,0,s,s);
+      // atmosphere
+      const agrad=ctx2.createRadialGradient(cx,cy,r*0.9,cx,cy,r*1.08);
+      agrad.addColorStop(0,'rgba(0,217,255,0)');agrad.addColorStop(0.6,'rgba(0,217,255,0.15)');
+      agrad.addColorStop(1,'rgba(100,240,255,0.7)');
+      ctx2.fillStyle=agrad;ctx2.fillRect(0,0,s,s);
+      ctx2.restore();
+      requestAnimationFrame(ts=>draw2d(ts*0.001));
+    }
+    draw2d(0);
+  }
+})();
+</script>
+</body>
+</html>
